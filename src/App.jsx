@@ -1,12 +1,14 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import './index.css'
 import FileTree from './components/FileTree/FileTree'
 import Tabs from './components/Tabs/Tabs'
 import EditorComponent from './components/Editor/Editor'
+import AIPanel from './components/AIPanel/AIPanel'
 
 function App() {
   const [openedTabs, setOpenedTabs] = useState([])
   const [activeTab, setActiveTab] = useState(null)
+  const editorRef = useRef(null)
 
   const handleFileSelect = useCallback((filePath, content) => {
     setOpenedTabs(prevTabs => {
@@ -77,6 +79,21 @@ function App() {
     }
   }, [openedTabs])
 
+  // Функция для получения выделенного текста из редактора
+  const getSelectedText = useCallback(() => {
+    if (editorRef.current) {
+      return editorRef.current.getModel()?.getValueInRange(
+        editorRef.current.getSelection()
+      ) || ''
+    }
+    return ''
+  }, [])
+
+  // Получаем контент активного файла для AI панели
+  const activeFileContent = activeTab 
+    ? openedTabs.find(tab => tab.path === activeTab)?.content || ''
+    : ''
+
   return (
     <div className="app-container">
       <div className="sidebar-left">
@@ -94,11 +111,14 @@ function App() {
           openedTabs={openedTabs}
           onContentChange={handleContentChange}
           onSave={handleSave}
+          editorRef={editorRef}
         />
       </div>
       <div className="sidebar-right">
-        <h3>AI Panel</h3>
-        <p>AI assistant will go here</p>
+        <AIPanel 
+          activeFileContent={activeFileContent}
+          getSelectedText={getSelectedText}
+        />
       </div>
     </div>
   )

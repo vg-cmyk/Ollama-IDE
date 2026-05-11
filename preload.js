@@ -13,5 +13,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
   
   // Save file contents
-  saveFile: (path, content) => ipcRenderer.invoke('save-file', { path, content })
+  saveFile: (path, content) => ipcRenderer.invoke('save-file', { path, content }),
+  
+  // Ollama: get available models
+  getOllamaModels: () => ipcRenderer.invoke('ollama-get-models'),
+  
+  // Ollama: send chat message
+  sendToOllama: (model, messages) => ipcRenderer.invoke('ollama-chat', { model, messages })
 })

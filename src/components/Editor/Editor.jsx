@@ -25,27 +25,34 @@ function getLanguageFromPath(filePath) {
   return languageMap[ext] || 'plaintext';
 }
 
-function EditorComponent({ activeTab, openedTabs, onContentChange, onSave }) {
-  const editorRef = useRef(null);
+function EditorComponent({ activeTab, openedTabs, onContentChange, onSave, editorRef }) {
+  const internalEditorRef = useRef(null);
   const viewStates = useRef({});
+
+  // Пробрасываем ref наружу для доступа из App
+  useEffect(() => {
+    if (internalEditorRef.current) {
+      editorRef.current = internalEditorRef.current;
+    }
+  }, [editorRef]);
 
   // Сохраняем состояние редактора при переключении вкладок
   useEffect(() => {
-    if (editorRef.current && activeTab) {
-      viewStates.current[activeTab] = editorRef.current.saveViewState();
+    if (internalEditorRef.current && activeTab) {
+      viewStates.current[activeTab] = internalEditorRef.current.saveViewState();
     }
   }, [activeTab]);
 
   // Восстанавливаем состояние редактора при переключении вкладок
   useEffect(() => {
-    if (editorRef.current && activeTab && viewStates.current[activeTab]) {
-      editorRef.current.restoreViewState(viewStates.current[activeTab]);
-      editorRef.current.focus();
+    if (internalEditorRef.current && activeTab && viewStates.current[activeTab]) {
+      internalEditorRef.current.restoreViewState(viewStates.current[activeTab]);
+      internalEditorRef.current.focus();
     }
   }, [activeTab]);
 
   const handleEditorMount = (editor) => {
-    editorRef.current = editor;
+    internalEditorRef.current = editor;
     
     // Обработчик Ctrl+S для сохранения
     editor.addCommand(
