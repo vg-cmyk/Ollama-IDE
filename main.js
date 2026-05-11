@@ -53,6 +53,17 @@ function createWindow() {
     }
   })
 
+  // Обработчик для сохранения содержимого файла
+  ipcMain.handle('save-file', async (event, { path: filePath, content }) => {
+    try {
+      fs.writeFileSync(filePath, content, 'utf-8')
+      return { success: true }
+    } catch (error) {
+      console.error('Error saving file:', error)
+      return { success: false, error: error.message }
+    }
+  })
+
   // Загружаем HTML после того как окно готово
   if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
     win.loadURL('http://localhost:5173')
