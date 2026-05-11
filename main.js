@@ -2,6 +2,46 @@ const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const fs = require('fs')
 const path = require('path')
 
+// Обработчик для получения списка моделей Ollama
+ipcMain.handle('ollama-get-models', async () => {
+  try {
+    const response = await fetch('http://localhost:11434/api/tags')
+    if (!response.ok) {
+      throw new Error('Ollama not available')
+    }
+    const data = await response.json()
+    return data.models?.map(m => m.name) || []
+  } catch (error) {
+    console.error('Error getting Ollama models:', error)
+    return []
+  }
+})
+
+// Обработчик для отправки сообщения в Ollama
+ipcMain.handle('ollama-chat', async (event, { model, messages }) => {
+  try {
+    const response = await fetch('http://localhost:11434/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: false
+      })
+    })
+    if (!response.ok) {
+      throw new Error('Ollama request failed')
+    }
+    const data = await response.json()
+    return data.message?.content || ''
+  } catch (error) {
+    console.error('Error sending to Ollama:', error)
+    throw error
+  }
+})
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1400,
