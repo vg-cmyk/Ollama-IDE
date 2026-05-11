@@ -1,0 +1,24 @@
+{
+  "name": "electron-react-app",
+  "version": "1.0.0",
+  "description": "Electron + React + Vite application",
+  "main": "main.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "electron": "^28.3.3",
+    "electron-vite": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite": "^5.1.0"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.6.0"
+  }
+}
