@@ -4,11 +4,17 @@ import FileTree from './components/FileTree/FileTree'
 import Tabs from './components/Tabs/Tabs'
 import EditorComponent from './components/Editor/Editor'
 import AIPanel from './components/AIPanel/AIPanel'
+import Splash from './components/Splash/Splash'
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true)
   const [openedTabs, setOpenedTabs] = useState([])
   const [activeTab, setActiveTab] = useState(null)
   const editorRef = useRef(null)
+
+  const handleSplashFinish = useCallback(() => {
+    setIsLoading(false)
+  }, [])
 
   const handleFileSelect = useCallback((filePath, content) => {
     setOpenedTabs(prevTabs => {
@@ -82,9 +88,14 @@ function App() {
   // Функция для получения выделенного текста из редактора
   const getSelectedText = useCallback(() => {
     if (editorRef.current) {
-      return editorRef.current.getModel()?.getValueInRange(
-        editorRef.current.getSelection()
-      ) || ''
+      const editor = editorRef.current
+      if (editor && typeof editor.getModel === 'function') {
+        const model = editor.getModel()
+        const selection = editor.getSelection()
+        if (model && selection) {
+          return model.getValueInRange(selection) || ''
+        }
+      }
     }
     return ''
   }, [])
@@ -93,6 +104,11 @@ function App() {
   const activeFileContent = activeTab 
     ? openedTabs.find(tab => tab.path === activeTab)?.content || ''
     : ''
+
+  // Показываем Splash экран во время загрузки
+  if (isLoading) {
+    return <Splash onFinish={handleSplashFinish} />
+  }
 
   return (
     <div className="app-container">
