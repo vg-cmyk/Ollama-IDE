@@ -10,7 +10,7 @@ build/
 # Environment
 .env
 .env.local
-*.env.*
+.env.*
 
 # Editors
 .vscode/
@@ -19,12 +19,16 @@ build/
 # Logs
 *.log
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Temporary files
 *.tmp
 *.swp
-*.swo
-
-# OS
+*~
 .DS_Store
 Thumbs.db
 
@@ -33,33 +37,15 @@ coverage/
 htmlcov/
 .coverage
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage*
-.nox/
-.pytest_cache/
+# Testing
 .mypy_cache/
+.pytest_cache/
 
-# Compiled
-*.o
-*.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
+# Gradle
+.gradle/
+target/
 
-# Compressed
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -78,4 +64,8 @@ pip-delete-this-directory.txt
 *.Z
 *.lz
 *.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```

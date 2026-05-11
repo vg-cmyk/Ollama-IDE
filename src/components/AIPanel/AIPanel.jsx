@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import './AIPanel.css'
+import { electronAPI } from '../../electronAPI'
 
 const SYSTEM_PROMPT = `Ты опытный программист. Отвечай на русском языке.
 Код всегда оборачивай в markdown блоки с указанием языка.`
@@ -12,7 +13,7 @@ const formatTime = (date) => {
 // Извлечение кода из markdown и оборачивание в <pre>
 const renderMessageContent = (content) => {
   const parts = content.split(/(```[\s\S]*?```)/g)
-  
+
   return parts.map((part, index) => {
     if (part.startsWith('```')) {
       // Извлекаем язык и код
@@ -24,7 +25,7 @@ const renderMessageContent = (content) => {
           <div key={index} className="code-block-wrapper">
             <div className="code-block-header">
               <span className="code-lang">{lang}</span>
-              <button 
+              <button
                 className="copy-code-btn"
                 onClick={() => navigator.clipboard.writeText(code)}
               >
@@ -55,7 +56,7 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
   useEffect(() => {
     const loadModels = async () => {
       try {
-        const availableModels = await window.electronAPI.getOllamaModels()
+        const availableModels = await electronAPI.getOllamaModels()
         if (availableModels.length > 0) {
           setModels(availableModels)
           setSelectedModel(availableModels[0])
@@ -97,14 +98,14 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
         { role: 'user', content: messageText.trim() }
       ]
 
-      const response = await window.electronAPI.sendToOllama(selectedModel, allMessages)
-      
+      const response = await electronAPI.sendToOllama(selectedModel, allMessages)
+
       const assistantMessage = {
         role: 'assistant',
         content: response,
         time: new Date()
       }
-      
+
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       console.error('Error sending to Ollama:', error)
@@ -159,8 +160,8 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
         {!ollamaAvailable ? (
           <span className="ollama-warning">⚠️ Ollama недоступна</span>
         ) : (
-          <select 
-            value={selectedModel} 
+          <select
+            value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
             disabled={isLoading}
           >
@@ -179,8 +180,8 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
           </div>
         ) : (
           messages.map((msg, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`message ${msg.role}`}
             >
               <div className="message-header">
@@ -192,7 +193,7 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
               <div className="message-content">
                 {renderMessageContent(msg.content)}
               </div>
-              <button 
+              <button
                 className="copy-message-btn"
                 onClick={() => navigator.clipboard.writeText(msg.content)}
               >
@@ -212,28 +213,28 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
       {/* Кнопки быстрых действий */}
       {activeFileContent && (
         <div className="quick-actions">
-          <button 
+          <button
             className="quick-action-btn"
             onClick={() => handleQuickAction('Объясни этот код подробно')}
             disabled={isLoading}
           >
             💡 Объяснить код
           </button>
-          <button 
+          <button
             className="quick-action-btn"
             onClick={() => handleQuickAction('Найди баги и проблемы в этом коде')}
             disabled={isLoading}
           >
             🔍 Найти баги
           </button>
-          <button 
+          <button
             className="quick-action-btn"
             onClick={() => handleQuickAction('Сделай рефакторинг этого кода, улучши читаемость')}
             disabled={isLoading}
           >
             ⚡ Рефакторинг
           </button>
-          <button 
+          <button
             className="quick-action-btn"
             onClick={handleExplainSelection}
             disabled={isLoading}
@@ -255,14 +256,14 @@ const AIPanel = ({ activeFileContent, getSelectedText }) => {
           disabled={isLoading || !ollamaAvailable}
         />
         <div className="input-buttons">
-          <button 
+          <button
             className="clear-chat-btn"
             onClick={clearChat}
             disabled={isLoading || messages.length === 0}
           >
             🗑️
           </button>
-          <button 
+          <button
             className="send-btn"
             onClick={() => sendMessage(inputValue)}
             disabled={isLoading || !inputValue.trim() || !ollamaAvailable}
