@@ -1,4 +1,4 @@
-# Build artifacts
+# Build outputs
 dist/
 build/
 *.js.map
@@ -10,9 +10,9 @@ node_modules/
 # Environment variables
 .env
 .env.local
-.env.*
+*.env.*
 
-# IDE specific
+# Editors
 .vscode/
 .idea/
 *.swp
@@ -21,7 +21,10 @@ node_modules/
 # Logs
 *.log
 
-# Python (if applicable)
+# Temp files
+*.tmp
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -29,51 +32,34 @@ __pycache__/
 .Python
 venv/
 .venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache/
-.coverage
-htmlcov/
-.mypy_cache/
-
-# General temp files
-*.tmp
-*.temp
-*~
-.DS_Store
-Thumbs.db
+.env
 
 # Coverage reports
 coverage/
-.nyc_output/
+htmlcov/
+.coverage
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Thumbs.db:encryptable
-*~
+# MyPy cache
+.mypy_cache/
+.pytest_cache/
 
 # Distribution / packaging
 .Python
-*.so
-.class
-*.dll
-*.dylib
-*.exe
-*.out
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Testing
-coverage/
-junit.xml
-test-results/
-*.log
+# IDE
+.vscode/
+.idea/
 
-# Compression
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Compressed files
 *.zip
 *.gz
 *.tar
