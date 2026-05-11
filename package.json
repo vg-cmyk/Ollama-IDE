@@ -5,10 +5,9 @@
   "main": "main.js",
   "author": "OllamaIDE Team",
   "scripts": {
-    "dev": "electron-vite dev",
-    "build": "electron-vite build",
-    "build:win": "electron-vite build && electron-builder --win",
-    "dist": "electron-vite build && electron-builder --win --x64",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "create-icon": "node scripts/create-icon.js"
   },
   "keywords": [],

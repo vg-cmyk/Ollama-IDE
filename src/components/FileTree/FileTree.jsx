@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './FileTree.css'
+import { electronAPI } from '../../electronAPI'
 
 // Иконки для файлов по расширению
 const getFileIcon = (fileName) => {
@@ -79,7 +80,7 @@ const FileTree = ({ onFileSelect }) => {
   // Открыть диалог выбора папки
   const handleOpenFolder = async () => {
     try {
-      const result = await window.electronAPI.openFolder()
+      const result = await electronAPI.openFolder()
       if (!result.canceled && result.filePaths.length > 0) {
         const folderPath = result.filePaths[0]
         setRootPath(folderPath)
@@ -93,7 +94,7 @@ const FileTree = ({ onFileSelect }) => {
   // Загрузить содержимое папки
   const loadDirectory = async (folderPath) => {
     try {
-      const items = await window.electronAPI.readDirectory(folderPath)
+      const items = await electronAPI.readDirectory(folderPath)
       // Сортировка: сначала папки, потом файлы
       const sorted = items.sort((a, b) => {
         if (a.type === b.type) {
@@ -121,7 +122,7 @@ const FileTree = ({ onFileSelect }) => {
       const existingItem = findItem(items, folderPath)
       if (!existingItem || !existingItem.children) {
         try {
-          const children = await window.electronAPI.readDirectory(folderPath)
+          const children = await electronAPI.readDirectory(folderPath)
           const sorted = children.sort((a, b) => {
             if (a.type === b.type) {
               return a.name.localeCompare(b.name)
@@ -169,7 +170,7 @@ const FileTree = ({ onFileSelect }) => {
   const handleFileSelect = async (filePath) => {
     setSelectedFile(filePath)
     try {
-      const content = await window.electronAPI.readFile(filePath)
+      const content = await electronAPI.readFile(filePath)
       onFileSelect(filePath, content)
     } catch (error) {
       console.error('Error reading file:', error)

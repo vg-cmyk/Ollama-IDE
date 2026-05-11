@@ -5,6 +5,7 @@ import Tabs from './components/Tabs/Tabs'
 import EditorComponent from './components/Editor/Editor'
 import AIPanel from './components/AIPanel/AIPanel'
 import Splash from './components/Splash/Splash'
+import { electronAPI } from './electronAPI'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -72,7 +73,7 @@ function App() {
     if (!tab) return
     
     try {
-      const result = await window.electronAPI.saveFile(path, tab.content)
+      const result = await electronAPI.saveFile(path, tab.content)
       if (result.success) {
         setOpenedTabs(prevTabs => 
           prevTabs.map(t => 
