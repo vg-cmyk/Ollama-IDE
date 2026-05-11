@@ -2,45 +2,16 @@ const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 const fs = require('fs')
 const path = require('path')
 
-// Обработчик для получения списка моделей Ollama
-ipcMain.handle('ollama-get-models', async () => {
-  try {
-    const response = await fetch('http://localhost:11434/api/tags')
-    if (!response.ok) {
-      throw new Error('Ollama not available')
-    }
-    const data = await response.json()
-    return data.models?.map(m => m.name) || []
-  } catch (error) {
-    console.error('Error getting Ollama models:', error)
-    return []
-  }
-})
+let mainWindow
 
-// Обработчик для отправки сообщения в Ollama
-ipcMain.handle('ollama-chat', async (event, { model, messages }) => {
-  try {
-    const response = await fetch('http://localhost:11434/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        stream: false
-      })
-    })
-    if (!response.ok) {
-      throw new Error('Ollama request failed')
-    }
-    const data = await response.json()
-    return data.message?.content || ''
-  } catch (error) {
-    console.error('Error sending to Ollama:', error)
-    throw error
-  }
-})
+const isDev = !app.isPackaged
+
+// Пути к ресурсам
+const getResourcesPath = () => {
+  return isDev 
+    ? path.join(__dirname, 'assets')
+    : path.join(process.resourcesPath, 'assets')
+}
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -104,11 +75,52 @@ function createWindow() {
     }
   })
 
+  // Обработчик для получения списка моделей Ollama
+  ipcMain.handle('ollama-get-models', async () => {
+    try {
+      const response = await fetch('http://localhost:11434/api/tags')
+      if (!response.ok) {
+        throw new Error('Ollama not available')
+      }
+      const data = await response.json()
+      return data.models?.map(m => m.name) || []
+    } catch (error) {
+      console.error('Error getting Ollama models:', error)
+      return []
+    }
+  })
+
+  // Обработчик для отправки сообщения в Ollama
+  ipcMain.handle('ollama-chat', async (event, { model, messages }) => {
+    try {
+      const response = await fetch('http://localhost:11434/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          stream: false
+        })
+      })
+      if (!response.ok) {
+        throw new Error('Ollama request failed')
+      }
+      const data = await response.json()
+      return data.message?.content || ''
+    } catch (error) {
+      console.error('Error sending to Ollama:', error)
+      throw error
+    }
+  })
+
   // Загружаем HTML после того как окно готово
-  if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
+  if (isDev) {
     win.loadURL('http://localhost:5173')
     win.webContents.openDevTools()
   } else {
+    // В production загружаем из папки dist
     win.loadFile(path.join(__dirname, 'dist', 'index.html'))
   }
 

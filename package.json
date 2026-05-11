@@ -1,18 +1,22 @@
 {
-  "name": "electron-react-app",
+  "name": "ollamaIDE",
   "version": "1.0.0",
-  "description": "Electron + React + Vite application",
+  "description": "Лёгкий редактор кода с AI на базе Ollama",
   "main": "main.js",
+  "author": "OllamaIDE Team",
   "scripts": {
     "dev": "electron-vite dev",
-    "build": "electron-vite build"
+    "build": "electron-vite build",
+    "build:win": "electron-vite build && electron-builder --win",
+    "dist": "electron-vite build && electron-builder --win --x64",
+    "create-icon": "node scripts/create-icon.js"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
     "electron": "^28.3.3",
+    "electron-builder": "^24.9.1",
     "electron-vite": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -20,5 +24,55 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0"
+  },
+  "build": {
+    "appId": "com.ollamaIDE.app",
+    "productName": "OllamaIDE",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "OllamaIDE",
+      "runAfterFinish": true,
+      "language": "1049"
+    },
+    "portable": {
+      "artifactName": "OllamaIDE-portable.exe"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets/",
+        "filter": ["**/*"]
+      }
+    ]
   }
 }
