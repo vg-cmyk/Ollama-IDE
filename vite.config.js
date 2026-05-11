@@ -5,11 +5,9 @@ import path from 'path'
 export default defineConfig({
   main: {
     build: {
-      lib: {
-        entry: path.resolve(__dirname, 'main.js'),
-        formats: ['cjs']
-      },
+      target: 'node20',
       rollupOptions: {
+        input: path.resolve(__dirname, 'main.js'),
         output: {
           format: 'cjs',
           entryFileNames: '[name].js'
@@ -24,11 +22,9 @@ export default defineConfig({
   },
   preload: {
     build: {
-      lib: {
-        entry: path.resolve(__dirname, 'preload.js'),
-        formats: ['cjs']
-      },
+      target: 'node20',
       rollupOptions: {
+        input: path.resolve(__dirname, 'preload.js'),
         output: {
           format: 'cjs',
           entryFileNames: '[name].js'
