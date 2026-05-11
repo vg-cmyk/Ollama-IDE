@@ -54,3 +54,17 @@ p {
   font-size: 12px;
   color: #888;
 }
+
+.file-content {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #252526;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: calc(100vh - 100px);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  color: #cccccc;
+}

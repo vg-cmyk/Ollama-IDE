@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain } = require('electron')
+const fs = require('fs')
 const path = require('path')
 
 function createWindow() {
@@ -16,6 +17,41 @@ function createWindow() {
 
   // Убираем стандартное меню
   win.setMenu(null)
+
+  // Обработчик для открытия диалога выбора папки
+  ipcMain.handle('open-folder', async () => {
+    const result = await dialog.showOpenDialog(win, {
+      properties: ['openDirectory']
+    })
+    return result
+  })
+
+  // Обработчик для чтения содержимого папки
+  ipcMain.handle('read-directory', async (event, folderPath) => {
+    try {
+      const items = fs.readdirSync(folderPath, { withFileTypes: true })
+      const result = items.map(item => ({
+        name: item.name,
+        path: path.join(folderPath, item.name),
+        type: item.isDirectory() ? 'directory' : 'file'
+      }))
+      return result
+    } catch (error) {
+      console.error('Error reading directory:', error)
+      return []
+    }
+  })
+
+  // Обработчик для чтения содержимого файла
+  ipcMain.handle('read-file', async (event, filePath) => {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8')
+      return content
+    } catch (error) {
+      console.error('Error reading file:', error)
+      return null
+    }
+  })
 
   // Загружаем HTML после того как окно готово
   if (process.env.NODE_ENV === 'development' || !app.isPackaged) {
