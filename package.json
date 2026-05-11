@@ -2,12 +2,12 @@
   "name": "ollamaIDE",
   "version": "1.0.0",
   "description": "Лёгкий редактор кода с AI на базе Ollama",
-  "main": "main.js",
+  "main": "dist/main.js",
   "author": "OllamaIDE Team",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
     "create-icon": "node scripts/create-icon.js"
   },
   "keywords": [],
@@ -62,8 +62,6 @@
     },
     "files": [
       "dist/**/*",
-      "main.js",
-      "preload.js",
       "package.json"
     ],
     "extraResources": [
